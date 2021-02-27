@@ -1,0 +1,50 @@
+<div class="center">
+    <h2>Current Song</h2>
+</div>
+
+<div class="currentsong">
+    <table
+        *ngIf="currently_playing; else noSong"
+        width="100%"
+    >
+        <tr>
+            <th>
+                <h3>{{ currently_playing.name }}</h3>
+            </th>
+            <th>
+                <h3>
+                    {{ currently_playing.author ?
+                        currently_playing.author : "No Data" }}
+                </h3>
+            </th>
+            <th>
+                <h3>
+                    {{ currently_playing.album ?
+                        currently_playing.album : "No Data" }}
+                </h3>
+            </th>
+        </tr>
+    </table>
+    <ng-template #noSong>
+        <h3 class="center">No songs are currently playing.</h3>
+    </ng-template>
+</div>
+
+<div class="songqueue">
+    <table
+        class="songqueue"
+        width="100%"
+    >
+        <tr *ngFor="let song of song_queue">
+            <th>
+                <h3>{{ song.name }}</h3>
+            </th>
+            <th>
+                <h3>{{ song.author ? song.author : "No Data" }}</h3>
+            </th>
+            <th>
+                <h3>{{ song.album ? song.album : "No Data" }}</h3>
+            </th>
+        </tr>
+    </table>
+</div>

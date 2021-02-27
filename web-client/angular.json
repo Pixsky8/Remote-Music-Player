@@ -67,6 +67,11 @@
           "options": {
             "browserTarget": "web-client:build"
           },
+          "watchedOptions": {
+            "ignored": [
+                "/node_modules/"
+            ]
+          },
           "configurations": {
             "production": {
               "browserTarget": "web-client:build:production"
@@ -97,11 +102,15 @@
           }
         },
         "lint": {
-          "builder": "@angular-eslint/builder:lint",
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
             ]
           }
         },
