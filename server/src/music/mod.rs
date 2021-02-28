@@ -1,9 +1,11 @@
 use std::fs::File;
 use std::io::BufReader;
 
+pub mod mp3;
+
 pub struct Music {
     sink: rodio::Sink,
-    path_queue: Vec<String>,
+    path_queue: Vec<mp3::Mp3>,
 
     #[allow(dead_code)]
     stream: rodio::OutputStream,
@@ -41,13 +43,14 @@ impl Music {
         self.sink.append(source);
 
         self.update_queue();
-        self.path_queue.insert(0, music_path.clone());
+        self.path_queue
+            .insert(0, mp3::Mp3::new(music_path.clone()).unwrap());
 
         return true;
     }
 
-    pub fn get_queue(&mut self) -> String {
-        return self.path_queue.join("\n");
+    pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
+        self.path_queue.clone()
     }
 
     fn update_queue(&mut self) {
