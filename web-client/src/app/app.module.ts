@@ -1,19 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { CurrentSongComponent } from './current/current.component';
+// Components
+import { SongListComponent } from './song_list/song_list.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        CurrentSongComponent
+        SongListComponent
     ],
     imports: [
         BrowserModule,
-        AppRoutingModule
+        AppRoutingModule,
+        HttpClientModule
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CurrentSongComponent } from './current/current.component'
+import { SongListComponent } from './song_list/song_list.component'
 
 const routes: Routes = [
-    { path: '', component: CurrentSongComponent, pathMatch: 'full'}
+    { path: '', component: SongListComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
