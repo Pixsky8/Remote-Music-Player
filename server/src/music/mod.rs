@@ -30,15 +30,20 @@ impl Music {
         self.sink.set_volume(real_value);
     }
 
-    // TODO: catch file errors
-    pub fn add_queue(&mut self, music_path: String) {
-        let file = File::open(music_path.clone()).unwrap();
+    pub fn add_queue(&mut self, music_path: String) -> bool {
+        let file = match File::open(music_path.clone()) {
+            Ok(file) => file,
+            Err(_err) => return false,
+        };
+
         let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
 
         self.sink.append(source);
 
         self.update_queue();
         self.path_queue.insert(0, music_path.clone());
+
+        return true;
     }
 
     pub fn get_queue(&mut self) -> String {

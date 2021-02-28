@@ -2,13 +2,13 @@
 #[macro_use]
 extern crate rocket;
 
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 mod api;
 mod music;
 
 fn main() {
-    let mut player = Mutex::new(music::Music::new());
+    let player = Mutex::new(music::Music::new());
 
     let web_server = api::start_api(player);
     web_server.launch();
