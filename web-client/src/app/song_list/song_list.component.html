@@ -8,16 +8,16 @@
         width="100%"
     >
         <tr>
-            <th>
+            <th width="33%">
                 <h3>{{ currently_playing.name }}</h3>
             </th>
-            <th>
+            <th width="33%">
                 <h3>
                     {{ currently_playing.author ?
                         currently_playing.author : "No Data" }}
                 </h3>
             </th>
-            <th>
+            <th width="33%">
                 <h3>
                     {{ currently_playing.album ?
                         currently_playing.album : "No Data" }}
@@ -36,13 +36,13 @@
         width="100%"
     >
         <tr *ngFor="let song of song_queue">
-            <th>
+            <th width="33%">
                 <h3>{{ song.name }}</h3>
             </th>
-            <th>
+            <th width="33%">
                 <h3>{{ song.author ? song.author : "No Data" }}</h3>
             </th>
-            <th>
+            <th width="33%">
                 <h3>{{ song.album ? song.album : "No Data" }}</h3>
             </th>
         </tr>
