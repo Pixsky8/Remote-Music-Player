@@ -1,11 +1,15 @@
+#![feature(proc_macro_hygiene, decl_macro)]
+#[macro_use]
+extern crate rocket;
+
+use std::sync::{Arc, Mutex};
+
+mod api;
 mod music;
 
 fn main() {
-    let mut player = music::Music::new();
+    let mut player = Mutex::new(music::Music::new());
 
-    player.add_queue(String::from("/mnt/hdd/Musique/Heartbeat.mp3"));
-
-    player.change_volume(140);
-
-    loop {}
+    let web_server = api::start_api(player);
+    web_server.launch();
 }

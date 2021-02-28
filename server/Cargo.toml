@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 lazy_static = "1.4.0"
 rodio = "0.13.0"
+rocket = "0.4.7"
+rocket_contrib = "0.4.7"
+serde = "1.0"
