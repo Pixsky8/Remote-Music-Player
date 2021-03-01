@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 // Components
-import { SongListComponent } from './song_list/song_list.component';
+import { SongListComponent } from './song-list/song-list.component';
+import { RequestSongComponent } from './request-song/request-song.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        SongListComponent
+        SongListComponent,
+        RequestSongComponent
     ],
     imports: [
         BrowserModule,

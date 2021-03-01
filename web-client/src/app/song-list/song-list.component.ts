@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Song } from '../interfaces/song';
-import { SongService } from '../interfaces/song.service'
+import { Song } from '../interfaces/get/song';
+import { SongService } from '../interfaces/get/song.service'
 
 @Component({
     selector: 'app-song-list',
-    templateUrl: './song_list.component.html',
+    templateUrl: './song-list.component.html',
     providers: [SongService],
-    styleUrls: ['./song_list.component.css']
+    styleUrls: ['./song-list.component.css']
 })
 export class SongListComponent implements OnInit {
     currently_playing: Song | null = null;

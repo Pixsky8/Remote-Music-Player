@@ -64,8 +64,6 @@ impl Music {
         let music_path: String =
             self.config.get_music_path().to_string() + music_path;
 
-        println!("{}", music_path);
-
         let file = match File::open(&music_path) {
             Ok(file) => file,
             Err(_err) => return Status::NotFound,
