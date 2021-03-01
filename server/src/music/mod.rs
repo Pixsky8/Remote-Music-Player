@@ -1,34 +1,16 @@
+use rocket::http::Status;
 use std::fs::File;
 use std::io::BufReader;
 
+pub mod config;
 pub mod mp3;
 
-pub struct Config {
-    min_volume: u8,
-    max_volume: u8,
-}
-
-impl Config {
-    pub fn new() -> Config {
-        Config {
-            min_volume: 0,
-            max_volume: 150,
-        }
-    }
-
-    pub fn set_max_volume(&mut self, new: u8) {
-        self.max_volume = new;
-    }
-
-    pub fn set_min_volume(&mut self, new: u8) {
-        self.min_volume = new;
-    }
-}
+mod file;
 
 pub struct Music {
     sink: rodio::Sink,
     path_queue: Vec<mp3::Mp3>,
-    config: Config,
+    pub config: config::Config,
 
     #[allow(dead_code)]
     stream: rodio::OutputStream,
@@ -46,7 +28,7 @@ impl Music {
             stream: stream_,
             sink: rodio::Sink::try_new(&stream_handle_).unwrap(),
             path_queue: Vec::new(),
-            config: Config::new(),
+            config: config::Config::new(),
         }
     }
 
@@ -62,10 +44,19 @@ impl Music {
         self.sink.set_volume(real_value);
     }
 
-    pub fn add_queue(&mut self, music_path: String) -> bool {
-        let file = match File::open(music_path.clone()) {
+    pub fn add_queue(&mut self, music_path: &str) -> Status {
+        if !file::allow_access(&music_path) {
+            return Status::Forbidden;
+        }
+
+        let music_path: String =
+            self.config.get_music_path().to_string() + music_path;
+
+        println!("{}", music_path);
+
+        let file = match File::open(&music_path) {
             Ok(file) => file,
-            Err(_err) => return false,
+            Err(_err) => return Status::NotFound,
         };
 
         let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
@@ -74,9 +65,9 @@ impl Music {
 
         self.update_queue();
         self.path_queue
-            .insert(0, mp3::Mp3::new(music_path.clone()).unwrap());
+            .insert(0, mp3::Mp3::new(&music_path).unwrap());
 
-        return true;
+        return Status::Ok;
     }
 
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {

@@ -12,8 +12,8 @@ pub struct Mp3 {
 }
 
 impl Mp3 {
-    pub fn new(path: String) -> Result<Mp3, Box<dyn Error>> {
-        let tag = Tag::read_from_path(path.clone())?;
+    pub fn new(path: &str) -> Result<Mp3, Box<dyn Error>> {
+        let tag = Tag::read_from_path(path)?;
 
         let mut mp3_file = Mp3 {
             name: None,
@@ -26,7 +26,7 @@ impl Mp3 {
             mp3_file.name = Some(name.to_string());
         }
         else {
-            mp3_file.name = Some(path.clone());
+            mp3_file.name = Some(path.to_string());
         }
 
         if let Some(author) = tag.artist() {

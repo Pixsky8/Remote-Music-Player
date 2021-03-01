@@ -16,9 +16,5 @@ pub fn add_queue(
     music_player: State<Mutex<Music>>,
     song: Json<SongRequest>,
 ) -> Status {
-    if !music_player.lock().unwrap().add_queue(song.path.clone()) {
-        return Status::NotFound;
-    }
-
-    Status::Ok
+    music_player.lock().unwrap().add_queue(&song.path)
 }
