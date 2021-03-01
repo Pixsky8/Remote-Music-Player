@@ -1736,6 +1736,7 @@ dependencies = [
  "rocket_contrib",
  "rodio",
  "serde",
+ "toml 0.5.8",
 ]
 
 [[package]]

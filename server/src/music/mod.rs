@@ -32,6 +32,18 @@ impl Music {
         }
     }
 
+    pub fn new_from_file(config_file: &str) -> Music {
+        let (stream_, stream_handle_) =
+            rodio::OutputStream::try_default().unwrap();
+
+        Music {
+            stream: stream_,
+            sink: rodio::Sink::try_new(&stream_handle_).unwrap(),
+            path_queue: Vec::new(),
+            config: config::Config::new_from_file(config_file),
+        }
+    }
+
     pub fn change_volume(&mut self, volume: u8) {
         let volume = match volume {
             v if v > self.config.max_volume => self.config.max_volume,

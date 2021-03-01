@@ -1,3 +1,7 @@
+use serde::Deserialize;
+use std::fs::File;
+
+#[derive(Deserialize)]
 pub struct Config {
     pub min_volume: u8,
     pub max_volume: u8,
@@ -11,6 +15,27 @@ impl Config {
             max_volume: 150,
             music_path: "/".to_string(),
         }
+    }
+
+    pub fn new_from_file(config_file: &str) -> Config {
+        let _file = match File::open(&config_file) {
+            Ok(file) => file,
+            Err(_err) => return Config::new(),
+        };
+
+        let config_str: String = match std::fs::read_to_string(&config_file) {
+            Err(_) => return Config::new(),
+            Ok(res_str) => res_str,
+        };
+
+        let mut res: Config = match toml::from_str(&config_str) {
+            Err(_) => return Config::new(),
+            Ok(res_conf) => res_conf,
+        };
+
+        res.set_music_path(&res.music_path.clone());
+
+        return res;
     }
 
     pub fn set_max_volume(&mut self, new: u8) {
