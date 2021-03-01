@@ -1,6 +1,4 @@
-import { AbsoluteSourceSpan } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { queue } from 'rxjs';
 
 import { Song } from '../interfaces/song';
 import { SongService } from '../interfaces/song.service'
