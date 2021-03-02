@@ -1,11 +1,13 @@
 use rocket::http::Status;
+use rocket_contrib::json::Json;
 use std::fs::File;
 use std::io::BufReader;
 
 pub mod config;
+mod file;
 pub mod mp3;
 
-mod file;
+use crate::api;
 
 pub struct Music {
     sink: rodio::Sink,
@@ -56,9 +58,9 @@ impl Music {
         self.sink.set_volume(real_value);
     }
 
-    pub fn add_queue(&mut self, music_path: &str) -> Status {
+    pub fn add_queue(&mut self, music_path: &str) -> api::SongRequestRsp {
         if !file::allow_access(&music_path) {
-            return Status::Forbidden;
+            return api::SongRequestRsp::Error(Status::Forbidden);
         }
 
         let music_path: String =
@@ -66,18 +68,18 @@ impl Music {
 
         let file = match File::open(&music_path) {
             Ok(file) => file,
-            Err(_err) => return Status::NotFound,
+            Err(_err) => return api::SongRequestRsp::Error(Status::NotFound),
         };
 
         let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
 
         self.sink.append(source);
 
+        let new_mp3 = mp3::Mp3::new(&music_path).unwrap();
         self.update_queue();
-        self.path_queue
-            .insert(0, mp3::Mp3::new(&music_path).unwrap());
+        self.path_queue.insert(0, new_mp3.clone());
 
-        return Status::Ok;
+        return api::SongRequestRsp::Body(Json(new_mp3));
     }
 
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
