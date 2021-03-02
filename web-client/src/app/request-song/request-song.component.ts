@@ -12,26 +12,29 @@ import { Song } from '../interfaces/get/song'
     styleUrls: ['./request-song.component.css']
 })
 export class RequestSongComponent implements OnInit {
-    post: Request | null = null;
+    added_song: Song | null = null;
 
     constructor(private requestService: RequestService) { }
 
-    ngOnInit(): void {
-        this.post = {
-            path: 'Heartbeat.mp3'
-        };
-        this.postSongRequest();
-    }
+    ngOnInit(): void { }
 
-    private postSongRequest(): void {
-        if (this.post == null) {
+    requestSong(file: string): void {
+        if (file == "") {
             window.alert("Enter a song to send the request.");
             return;
         }
 
-        this.requestService.postRace(this.post)
+        var post: Request = {
+            path: file,
+        };
+
+        this.postSongRequest(post);
+    }
+
+    private postSongRequest(post: Request): void {
+        this.requestService.postRace(post)
             .subscribe(postRsp => {
-                console.log(postRsp)
+                this.added_song = postRsp
             });
     }
 }
