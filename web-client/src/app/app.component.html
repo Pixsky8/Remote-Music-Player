@@ -1,3 +1,10 @@
-<h1>Music Player</h1>
+<mat-toolbar color="primary">
+    <span>Music Player</span>
+</mat-toolbar>
+
+<nav mat-tab-nav-bar>
+    <a mat-tab-link routerLink="/"> Queue </a>
+    <a mat-tab-link routerLink="/request"> Request </a>
+</nav>
 
 <router-outlet></router-outlet>

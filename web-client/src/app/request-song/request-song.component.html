@@ -1,19 +1,32 @@
-<input
-    class="center"
-    style="width: 85%;"
-    #box
-    (keyup.enter)="requestSong(box.value)"
-    placeholder="Song file name"
->
+<div class="split left" width="50%">
+    <div class="center">
+        <input
+            class="text"
+            #localReq (keyup.enter)="requestSong(localReq.value)"
+            placeholder="Search song locally"
+        >
+    </div>
+    <div class="center">
+        <button (click)="requestSong(localReq.value)">Request</button>
+    </div>
+</div>
 
-<div
-    *ngIf="added_song"
-    width="100%"
->
+<div class="split right" width="50%">
+    <div class="center">
+        <input
+            class="text"
+            #ytReq (keyup.enter)="requestYtSong(ytReq.value)"
+            placeholder="Search song on youtube"
+        >
+    </div>
+    <div class="center">
+        <button (click)="requestYtSong(ytReq.value)">Request</button>
+    </div>
+</div>
+
+<div *ngIf="added_song" width="100%">
     <h3>Added:</h3>
-    <table
-        width="100%"
-    >
+    <table width="100%">
         <tr>
             <th width="33%">
                 <h3>{{ added_song.name }}</h3>

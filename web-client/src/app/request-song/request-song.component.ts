@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { RequestService } from '../interfaces/post/request.service';
 
@@ -14,13 +15,16 @@ import { Song } from '../interfaces/get/song'
 export class RequestSongComponent implements OnInit {
     added_song: Song | null = null;
 
-    constructor(private requestService: RequestService) { }
+    constructor(private requestService: RequestService,
+        private snackBar: MatSnackBar) { }
 
     ngOnInit(): void { }
 
     requestSong(file: string): void {
         if (file == "") {
-            window.alert("Enter a song to send the request.");
+            this.snackBar.open("Enter a song to send the request.", "", {
+                duration: 5000,
+            });
             return;
         }
 
@@ -29,6 +33,10 @@ export class RequestSongComponent implements OnInit {
         };
 
         this.postSongRequest(post);
+    }
+
+    requestYtSong(file: string): void {
+        window.alert("Not implemented yet.");
     }
 
     private postSongRequest(post: Request): void {

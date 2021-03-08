@@ -1,0 +1,23 @@
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    overflow-x: hidden;
+    padding-top: 20px;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.left {
+    left: 0;
+}
+
+.right {
+    right: 0;
+}
+
+input.text {
+    width: 75%;
+    margin-bottom: 10px;
+}
