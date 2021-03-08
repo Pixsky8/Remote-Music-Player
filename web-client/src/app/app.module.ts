@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 // Components
 import { SongListComponent } from './song-list/song-list.component';
 import { RequestSongComponent } from './request-song/request-song.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { RequestSongComponent } from './request-song/request-song.component';
     imports: [
         BrowserModule,
         AppRoutingModule,
-        HttpClientModule
+        HttpClientModule,
+        BrowserAnimationsModule
     ],
     providers: [],
     bootstrap: [AppComponent]
