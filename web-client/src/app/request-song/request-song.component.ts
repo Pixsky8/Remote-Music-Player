@@ -42,7 +42,14 @@ export class RequestSongComponent implements OnInit {
     private postSongRequest(post: Request): void {
         this.requestService.postRace(post)
             .subscribe(postRsp => {
-                this.added_song = postRsp
+                if (typeof postRsp == "number") {
+                    this.snackBar.open("Song was not found.", "", {
+                        duration: 5000,
+                    });
+                    return;
+                }
+
+                this.added_song = postRsp;
             });
     }
 }

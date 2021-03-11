@@ -17,10 +17,10 @@ export class RequestService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    postRace(requestPost: Request): Observable<Song> {
-        const racePostJson = JSON.stringify(requestPost);
+    postRace(requestPost: Request): Observable<Song | number> {
+        const songPostJson = JSON.stringify(requestPost);
         return this.http.post<Song>(this.songRequestUrl,
-            racePostJson,
+            songPostJson,
             this.httpOptions
         ).pipe(
             tap((result: Song) =>
@@ -30,9 +30,13 @@ export class RequestService {
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
-        return (error: any): Observable<T> => {
-            console.error(error);
-            return of(result as T);
+        return (error: any): Observable<T | number> => {
+            if (error.error instanceof ErrorEvent) {
+                console.error(error);
+                return of(result as T);
+            }
+
+            return of(error.status);
         }
     }
 }
