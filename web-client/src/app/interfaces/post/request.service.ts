@@ -10,6 +10,7 @@ import { Song } from '../get/song';
 @Injectable()
 export class RequestService {
     songRequestUrl = '/api/play'
+    songRequestYtUrl = '/api/ytplay'
 
     constructor(private http: HttpClient) { }
 
@@ -17,7 +18,7 @@ export class RequestService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    postRace(requestPost: Request): Observable<Song | number> {
+    requestSong(requestPost: Request): Observable<Song | number> {
         const songPostJson = JSON.stringify(requestPost);
         return this.http.post<Song>(this.songRequestUrl,
             songPostJson,
@@ -25,6 +26,18 @@ export class RequestService {
         ).pipe(
             tap((result: Song) =>
                 console.log('enqueued new song: ' + result.name)),
+            catchError(this.handleError<Song>('PostSongRequest'))
+        );
+    }
+
+    requestYtSong(requestPost: Request): Observable<Song | number> {
+        const songPostJson = JSON.stringify(requestPost);
+        return this.http.post<Song>(this.songRequestYtUrl,
+            songPostJson,
+            this.httpOptions
+        ).pipe(
+            tap((result: Song) =>
+                console.log('enqueued new yt song: ' + result.name)),
             catchError(this.handleError<Song>('PostSongRequest'))
         );
     }

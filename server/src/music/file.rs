@@ -1,5 +1,6 @@
 use std::ffi::OsStr;
 use std::path::Path;
+use std::path::PathBuf;
 
 pub fn allow_access(file_path_str: &str) -> bool {
     let file_path: &Path = Path::new(file_path_str);
@@ -18,4 +19,11 @@ pub fn allow_access(file_path_str: &str) -> bool {
     }
 
     true
+}
+
+pub fn replace_ext(file_path_str: &str, ext: &str) -> String {
+    let mut file_path: PathBuf = PathBuf::from(file_path_str);
+    file_path.set_extension(ext);
+
+    file_path.to_str().unwrap().to_string()
 }

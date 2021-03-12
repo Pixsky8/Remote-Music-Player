@@ -24,6 +24,11 @@ pub struct SongRequest {
 pub fn start_api(player: Mutex<Music>) -> rocket::Rocket {
     rocket::ignite().manage(player).mount(
         "/",
-        routes![get::get_queue, post::add_queue, get::bruh_moment],
+        routes![
+            get::get_queue,
+            post::add_queue_file,
+            post::add_queue_yt,
+            get::bruh_moment
+        ],
     )
 }

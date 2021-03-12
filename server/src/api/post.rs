@@ -7,9 +7,17 @@ use crate::api::SongRequestRsp;
 use crate::music::Music;
 
 #[post("/play", data = "<song>")]
-pub fn add_queue(
+pub fn add_queue_file(
     music_player: State<Mutex<Music>>,
     song: Json<SongRequest>,
 ) -> SongRequestRsp {
-    music_player.lock().unwrap().add_queue(&song.path)
+    music_player.lock().unwrap().add_queue_file(&song.path)
+}
+
+#[post("/ytplay", data = "<song>")]
+pub fn add_queue_yt(
+    music_player: State<Mutex<Music>>,
+    song: Json<SongRequest>
+) -> SongRequestRsp {
+    music_player.lock().unwrap().add_queue_yt(&song.path)
 }

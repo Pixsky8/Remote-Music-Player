@@ -36,11 +36,36 @@ export class RequestSongComponent implements OnInit {
     }
 
     requestYtSong(file: string): void {
-        window.alert("Not implemented yet.");
+        if (file == "") {
+            this.snackBar.open("Enter a song to send the request.", "", {
+                duration: 5000,
+            });
+            return;
+        }
+
+        var post: Request = {
+            path: file,
+        };
+
+        this.postYtSongRequest(post);
     }
 
     private postSongRequest(post: Request): void {
-        this.requestService.postRace(post)
+        this.requestService.requestSong(post)
+            .subscribe(postRsp => {
+                if (typeof postRsp == "number") {
+                    this.snackBar.open("Song was not found.", "", {
+                        duration: 5000,
+                    });
+                    return;
+                }
+
+                this.added_song = postRsp;
+            });
+    }
+
+        private postYtSongRequest(post: Request): void {
+        this.requestService.requestYtSong(post)
             .subscribe(postRsp => {
                 if (typeof postRsp == "number") {
                     this.snackBar.open("Song was not found.", "", {

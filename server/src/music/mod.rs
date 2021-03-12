@@ -6,6 +6,7 @@ use std::io::BufReader;
 pub mod config;
 mod file;
 pub mod mp3;
+mod yt;
 
 use crate::api;
 
@@ -58,13 +59,8 @@ impl Music {
         self.sink.set_volume(real_value);
     }
 
-    pub fn add_queue(&mut self, music_path: &str) -> api::SongRequestRsp {
-        if !file::allow_access(&music_path) {
-            return api::SongRequestRsp::Error(Status::Forbidden);
-        }
-
-        let music_path: String =
-            self.config.get_music_path().to_string() + music_path;
+    fn add_queue(&mut self, music_path: &str) -> api::SongRequestRsp {
+        self.update_queue();
 
         let file = match File::open(&music_path) {
             Ok(file) => file,
@@ -76,13 +72,34 @@ impl Music {
         self.sink.append(source);
 
         let new_mp3 = mp3::Mp3::new(&music_path).unwrap();
-        self.update_queue();
         self.path_queue.insert(0, new_mp3.clone());
 
         return api::SongRequestRsp::Body(Json(new_mp3));
     }
 
+    pub fn add_queue_file(&mut self, music_path: &str) -> api::SongRequestRsp {
+        if !file::allow_access(&music_path) {
+            return api::SongRequestRsp::Error(Status::Forbidden);
+        }
+
+        let music_path: String =
+            self.config.get_music_path().to_string() + music_path;
+
+        self.add_queue(&music_path)
+    }
+
+    pub fn add_queue_yt(&mut self, music_url: &str) -> api::SongRequestRsp {
+        let file_path: Option<String> = yt::yt_dl(music_url);
+        if file_path == None {
+            return api::SongRequestRsp::Error(Status::NotFound);
+        }
+
+        self.add_queue(&file_path.unwrap())
+    }
+
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
+        self.update_queue();
+
         self.path_queue.clone()
     }
 
