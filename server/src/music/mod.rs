@@ -59,7 +59,7 @@ impl Music {
         self.sink.set_volume(real_value);
     }
 
-    fn add_queue(&mut self, music_path: &str) -> api::SongRequestRsp {
+    fn add_queue(&mut self, music_path: &str, delete_afterward: bool) -> api::SongRequestRsp {
         self.update_queue();
 
         let file = match File::open(&music_path) {
@@ -71,7 +71,7 @@ impl Music {
 
         self.sink.append(source);
 
-        let new_mp3 = mp3::Mp3::new(&music_path).unwrap();
+        let new_mp3 = mp3::Mp3::new(&music_path, delete_afterward).unwrap();
         self.path_queue.insert(0, new_mp3.clone());
 
         return api::SongRequestRsp::Body(Json(new_mp3));
@@ -85,7 +85,7 @@ impl Music {
         let music_path: String =
             self.config.get_music_path().to_string() + music_path;
 
-        self.add_queue(&music_path)
+        self.add_queue(&music_path, false)
     }
 
     pub fn add_queue_yt(&mut self, music_url: &str) -> api::SongRequestRsp {
@@ -94,7 +94,7 @@ impl Music {
             return api::SongRequestRsp::Error(Status::NotFound);
         }
 
-        self.add_queue(&file_path.unwrap())
+        self.add_queue(&file_path.unwrap(), true)
     }
 
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
@@ -105,7 +105,15 @@ impl Music {
 
     fn update_queue(&mut self) {
         while self.path_queue.len() > self.sink.len() {
-            self.path_queue.pop();
+            let mp3_file_opt: Option<mp3::Mp3> = self.path_queue.pop();
+            if mp3_file_opt.is_none() {
+                continue;
+            }
+
+            let mp3_file = mp3_file_opt.unwrap();
+            if mp3_file.is_temporary() && mp3_file.use_path() {
+                file::delete_tmp_file(&mp3_file.get_name());
+            }
         }
     }
 }
