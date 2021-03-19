@@ -12,5 +12,6 @@ export class AppComponent {
     navTabs = [
         { path: '/', label: 'Queue' },
         { path: '/request', label: 'Request' },
+        { path: '/volume', label: 'Volume' },
     ];
 }

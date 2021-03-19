@@ -1,0 +1,14 @@
+<div class="center">
+    <h2>Volume Changer</h2>
+</div>
+
+<div class="volumechange">
+    <input
+        class="string"
+        #localVol (keyup.enter)="requestVolume(localVol.value)"
+        placeholder="100"
+    >
+    <div class="center">
+        <button (click)="requestVolume(localVol.value)">Change</button>
+    </div>
+</div>
