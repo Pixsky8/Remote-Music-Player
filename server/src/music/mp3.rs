@@ -11,6 +11,7 @@ pub struct Mp3 {
     album_cover: Option<String>,
     is_path: bool,
     delete_afterward: bool,
+    skip_votes: u32,
 }
 
 impl Mp3 {
@@ -27,6 +28,7 @@ impl Mp3 {
             album_cover: None,
             is_path: false,
             delete_afterward: delete_afterward,
+            skip_votes: 0,
         };
 
         if let Some(name) = tag.title() {
@@ -61,6 +63,7 @@ impl Mp3 {
             album_cover: album_cover,
             is_path: false,
             delete_afterward: false,
+            skip_votes: 0,
         }
     }
 
@@ -98,5 +101,13 @@ impl Mp3 {
 
     pub fn use_path(&self) -> bool {
         self.is_path
+    }
+
+    /**
+     * @brief Increment number of skip and return the new number
+     */
+    pub fn increment_skip(&mut self) -> u32 {
+        self.skip_votes += 1;
+        self.skip_votes
     }
 }

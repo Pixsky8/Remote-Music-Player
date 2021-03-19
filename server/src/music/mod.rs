@@ -141,4 +141,14 @@ impl Music {
             }
         }
     }
+
+    pub fn skip_vote(&mut self) -> Option<u32> {
+        self.update_queue();
+
+        if self.path_queue.is_empty() {
+            return None;
+        }
+
+        Some(self.path_queue[0].increment_skip())
+    }
 }
