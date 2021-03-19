@@ -9,17 +9,19 @@ import { AppComponent } from './app.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Components
 import { SongListComponent } from './song-list/song-list.component';
 import { RequestSongComponent } from './request-song/request-song.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { VolumeComponent } from './volume/volume.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         SongListComponent,
-        RequestSongComponent
+        RequestSongComponent,
+        VolumeComponent,
     ],
     imports: [
         BrowserModule,
