@@ -39,6 +39,6 @@ pub fn delete_tmp_file(file_path_str: &str) -> bool {
         Err(e) => {
             println!("Could not delete file {}: {}", file_path_str, e);
             return false;
-        },
+        }
     }
 }

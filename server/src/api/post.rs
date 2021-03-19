@@ -17,7 +17,7 @@ pub fn add_queue_file(
 #[post("/ytplay", data = "<song>")]
 pub fn add_queue_yt(
     music_player: State<Mutex<Music>>,
-    song: Json<SongRequest>
+    song: Json<SongRequest>,
 ) -> SongRequestRsp {
     music_player.lock().unwrap().add_queue_yt(&song.path)
 }

@@ -1,5 +1,5 @@
-use std::process::Command;
 use serde_json::Value;
+use std::process::Command;
 
 use crate::music::file;
 
@@ -31,7 +31,7 @@ pub fn yt_dl(url: &str) -> Option<String> {
         Err(e) => {
             println!("Invalid UTF-8 sequence: {}", e);
             return None;
-        },
+        }
     };
 
     let json_out: Value = match serde_json::from_str(output_str) {
@@ -39,12 +39,12 @@ pub fn yt_dl(url: &str) -> Option<String> {
         Err(e) => {
             println!("Invalid JSON File: {}", e);
             return None;
-        },
+        }
     };
 
     let file_name: Option<&str> = json_out["_filename"].as_str();
     if file_name == None {
-        return None
+        return None;
     };
 
     return Some(file::replace_ext(file_name.unwrap(), "mp3"));

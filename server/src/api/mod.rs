@@ -8,6 +8,7 @@ use crate::music::Music;
 
 mod get;
 mod post;
+mod volume;
 
 #[derive(Responder)]
 #[response(content_type = "json")]
@@ -28,7 +29,8 @@ pub fn start_api(player: Mutex<Music>) -> rocket::Rocket {
             get::get_queue,
             post::add_queue_file,
             post::add_queue_yt,
-            get::bruh_moment
+            volume::change_volume,
+            get::bruh_moment,
         ],
     )
 }

@@ -3,8 +3,8 @@ use std::fs::File;
 
 #[derive(Deserialize)]
 pub struct Config {
-    pub min_volume: u8,
-    pub max_volume: u8,
+    pub min_volume: i32,
+    pub max_volume: i32,
     music_path: String,
 }
 
@@ -38,11 +38,11 @@ impl Config {
         return res;
     }
 
-    pub fn set_max_volume(&mut self, new: u8) {
+    pub fn set_max_volume(&mut self, new: i32) {
         self.max_volume = new;
     }
 
-    pub fn set_min_volume(&mut self, new: u8) {
+    pub fn set_min_volume(&mut self, new: i32) {
         self.min_volume = new;
     }
 

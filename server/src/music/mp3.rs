@@ -14,7 +14,10 @@ pub struct Mp3 {
 }
 
 impl Mp3 {
-    pub fn new(path: &str, delete_afterward: bool) -> Result<Mp3, Box<dyn Error>> {
+    pub fn new(
+        path: &str,
+        delete_afterward: bool,
+    ) -> Result<Mp3, Box<dyn Error>> {
         let tag = Tag::read_from_path(path)?;
 
         let mut mp3_file = Mp3 {

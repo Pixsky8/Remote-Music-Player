@@ -47,7 +47,7 @@ impl Music {
         }
     }
 
-    pub fn change_volume(&mut self, volume: u8) {
+    pub fn change_volume(&mut self, volume: i32) -> i32 {
         let volume = match volume {
             v if v > self.config.max_volume => self.config.max_volume,
             v if v < self.config.min_volume => self.config.min_volume,
@@ -57,9 +57,15 @@ impl Music {
         let real_value: f32 = (volume as f32) / 100.0;
 
         self.sink.set_volume(real_value);
+
+        return volume;
     }
 
-    fn add_queue(&mut self, music_path: &str, delete_afterward: bool) -> api::SongRequestRsp {
+    fn add_queue(
+        &mut self,
+        music_path: &str,
+        delete_afterward: bool,
+    ) -> api::SongRequestRsp {
         self.update_queue();
 
         let file = match File::open(&music_path) {
