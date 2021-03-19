@@ -77,10 +77,18 @@ impl Music {
 
         self.sink.append(source);
 
-        let new_mp3 = mp3::Mp3::new(&music_path, delete_afterward).unwrap();
+        let new_mp3 =
+            mp3::Mp3::from_path(&music_path, delete_afterward).unwrap();
         self.path_queue.insert(0, new_mp3.clone());
 
-        return api::SongRequestRsp::Body(Json(new_mp3));
+        let returned_mp3 = mp3::Mp3::new(
+            file::get_filename(&new_mp3.name_get()),
+            new_mp3.author_get(),
+            new_mp3.album_get(),
+            new_mp3.cover_get(),
+        );
+
+        return api::SongRequestRsp::Body(Json(returned_mp3));
     }
 
     pub fn add_queue_file(&mut self, music_path: &str) -> api::SongRequestRsp {
@@ -106,7 +114,18 @@ impl Music {
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
         self.update_queue();
 
-        self.path_queue.clone()
+        let mut queue = vec![];
+
+        for elem in &self.path_queue {
+            queue.push(mp3::Mp3::new(
+                file::get_filename(&elem.name_get()),
+                elem.author_get(),
+                elem.album_get(),
+                elem.cover_get(),
+            ));
+        }
+
+        return queue;
     }
 
     fn update_queue(&mut self) {
@@ -118,7 +137,7 @@ impl Music {
 
             let mp3_file = mp3_file_opt.unwrap();
             if mp3_file.is_temporary() && mp3_file.use_path() {
-                file::delete_tmp_file(&mp3_file.get_name());
+                file::delete_tmp_file(&mp3_file.name_get());
             }
         }
     }

@@ -22,6 +22,15 @@ pub fn allow_access(file_path_str: &str) -> bool {
     true
 }
 
+pub fn get_filename(file_path: &str) -> String {
+    let file_name = Path::new(file_path).file_name();
+    if file_name.is_none() {
+        return "".to_string();
+    }
+
+    file_name.unwrap().to_string_lossy().to_string()
+}
+
 pub fn replace_ext(file_path_str: &str, ext: &str) -> String {
     let mut file_path: PathBuf = PathBuf::from(file_path_str);
     file_path.set_extension(ext);
