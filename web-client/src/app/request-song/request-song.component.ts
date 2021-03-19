@@ -13,8 +13,6 @@ import { Song } from '../interfaces/get/song'
     styleUrls: ['./request-song.component.css']
 })
 export class RequestSongComponent implements OnInit {
-    added_song: Song | null = null;
-
     constructor(private requestService: RequestService,
                 private snackBar: MatSnackBar) { }
 
@@ -60,11 +58,11 @@ export class RequestSongComponent implements OnInit {
                     return;
                 }
 
-                this.added_song = postRsp;
+                this.displayRequestResponse(postRsp);
             });
     }
 
-        private postYtSongRequest(post: Request): void {
+    private postYtSongRequest(post: Request): void {
         this.requestService.requestYtSong(post)
             .subscribe(postRsp => {
                 if (typeof postRsp == "number") {
@@ -74,7 +72,13 @@ export class RequestSongComponent implements OnInit {
                     return;
                 }
 
-                this.added_song = postRsp;
+                this.displayRequestResponse(postRsp);
             });
+    }
+
+    private displayRequestResponse(resp: Song): void {
+        this.snackBar.open("Enqueued song: " + resp.name, "", {
+            duration: 5000,
+        });
     }
 }

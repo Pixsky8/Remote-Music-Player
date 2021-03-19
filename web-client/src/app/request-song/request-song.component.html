@@ -23,20 +23,3 @@
         <button (click)="requestYtSong(ytReq.value)">Request</button>
     </div>
 </div>
-
-<div *ngIf="added_song" width="100%">
-    <h3>Added:</h3>
-    <table width="100%">
-        <tr>
-            <th width="33%">
-                <h3>{{ added_song.name }}</h3>
-            </th>
-            <th width="33%">
-                <h3>{{ added_song.author }}</h3>
-            </th>
-            <th width="33%">
-                <h3>{{ added_song.album }}</h3>
-            </th>
-        </tr>
-    </table>
-</div>
