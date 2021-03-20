@@ -9,7 +9,7 @@ pub struct Mp3 {
     author: Option<String>,
     album: Option<String>,
     album_cover: Option<String>,
-    is_path: bool,
+    path: Option<String>,
     delete_afterward: bool,
     skip_votes: u32,
 }
@@ -26,17 +26,17 @@ impl Mp3 {
             author: None,
             album: None,
             album_cover: None,
-            is_path: false,
+            path: None,
             delete_afterward: delete_afterward,
             skip_votes: 0,
         };
 
         if let Some(name) = tag.title() {
             mp3_file.name = name.to_string();
+            mp3_file.path = Some(path.to_string());
         }
         else {
             mp3_file.name = path.to_string();
-            mp3_file.is_path = true;
         }
 
         if let Some(author) = tag.artist() {
@@ -61,7 +61,7 @@ impl Mp3 {
             author: author,
             album: album,
             album_cover: album_cover,
-            is_path: false,
+            path: None,
             delete_afterward: false,
             skip_votes: 0,
         }
@@ -99,8 +99,18 @@ impl Mp3 {
         self.delete_afterward
     }
 
-    pub fn use_path(&self) -> bool {
-        self.is_path
+    /**
+     * @brief Return true if the name is also the path, false otherwise
+     */
+    pub fn path_as_name(&self) -> bool {
+        self.path == None
+    }
+
+    pub fn path_get(&self) -> String {
+        match &self.path {
+            None => self.name.clone(),
+            Some(v) => v.to_string(),
+        }
     }
 
     /**

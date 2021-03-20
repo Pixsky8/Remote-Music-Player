@@ -1,3 +1,4 @@
 min_volume = 0
 max_volume = 150
 music_path = "./music"
+votes_to_skip = 3

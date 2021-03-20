@@ -24,12 +24,12 @@ unsafe impl Sync for Music {}
 
 impl Music {
     pub fn new() -> Music {
-        let (stream_, stream_handle_) =
+        let (stream, stream_handle) =
             rodio::OutputStream::try_default().unwrap();
 
         Music {
-            stream: stream_,
-            sink: rodio::Sink::try_new(&stream_handle_).unwrap(),
+            stream: stream,
+            sink: rodio::Sink::try_new(&stream_handle).unwrap(),
             path_queue: Vec::new(),
             config: config::Config::new(),
         }
@@ -61,6 +61,27 @@ impl Music {
         return volume;
     }
 
+    fn replace_sink(&mut self) {
+        let (stream, stream_handle) =
+            rodio::OutputStream::try_default().unwrap();
+
+        self.stream = stream;
+        self.sink = rodio::Sink::try_new(&stream_handle).unwrap();
+    }
+
+    fn add_to_sink(&mut self, music_path: &str) -> Option<api::SongRequestRsp> {
+        let file = match File::open(&music_path) {
+            Ok(file) => file,
+            Err(_err) => return Some(api::SongRequestRsp::Error(Status::NotFound)),
+        };
+
+        let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
+
+        self.sink.append(source);
+
+        return None;
+    }
+
     fn add_queue(
         &mut self,
         music_path: &str,
@@ -68,14 +89,10 @@ impl Music {
     ) -> api::SongRequestRsp {
         self.update_queue();
 
-        let file = match File::open(&music_path) {
-            Ok(file) => file,
-            Err(_err) => return api::SongRequestRsp::Error(Status::NotFound),
-        };
-
-        let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
-
-        self.sink.append(source);
+        let sink_rsp = self.add_to_sink(music_path);
+        if !sink_rsp.is_none() {
+            return sink_rsp.unwrap();
+        }
 
         let new_mp3 =
             mp3::Mp3::from_path(&music_path, delete_afterward).unwrap();
@@ -136,8 +153,8 @@ impl Music {
             }
 
             let mp3_file = mp3_file_opt.unwrap();
-            if mp3_file.is_temporary() && mp3_file.use_path() {
-                file::delete_tmp_file(&mp3_file.name_get());
+            if mp3_file.is_temporary() {
+                file::delete_tmp_file(&mp3_file.path_get());
             }
         }
     }
@@ -149,6 +166,30 @@ impl Music {
             return None;
         }
 
-        Some(self.path_queue[0].increment_skip())
+        let last_value_index = self.path_queue.len() - 1;
+        let nb_votes = self.path_queue[last_value_index].increment_skip();
+
+        println!("Votes: {}", nb_votes);
+
+        if nb_votes >= self.config.nb_skip_get() {
+            println!("Skipping");
+            self.sink.stop();
+            self.path_queue.pop();
+
+            if last_value_index == 0 {
+                return None;
+            }
+
+            let mut i: usize = last_value_index - 1;
+            while i > 0 {
+                self.add_to_sink(&self.path_queue[i].path_get());
+                i -= 1;
+            }
+            self.add_to_sink(&self.path_queue[0].path_get());
+
+            Some(0);
+        }
+
+        Some(nb_votes)
     }
 }
