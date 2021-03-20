@@ -174,6 +174,7 @@ impl Music {
         if nb_votes >= self.config.nb_skip_get() {
             println!("Skipping");
             self.sink.stop();
+            self.replace_sink();
             self.path_queue.pop();
 
             if last_value_index == 0 {
