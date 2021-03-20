@@ -44,6 +44,7 @@ pub fn yt_dl(url: &str) -> Option<String> {
 
     let file_name: Option<&str> = json_out["_filename"].as_str();
     if file_name == None {
+        println!("No _filename field in output.");
         return None;
     };
 

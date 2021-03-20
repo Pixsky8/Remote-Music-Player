@@ -6,7 +6,7 @@ use std::io::BufReader;
 pub mod config;
 mod file;
 pub mod mp3;
-mod yt;
+pub mod yt;
 
 use crate::api;
 
@@ -119,13 +119,8 @@ impl Music {
         self.add_queue(&music_path, false)
     }
 
-    pub fn add_queue_yt(&mut self, music_url: &str) -> api::SongRequestRsp {
-        let file_path: Option<String> = yt::yt_dl(music_url);
-        if file_path == None {
-            return api::SongRequestRsp::Error(Status::NotFound);
-        }
-
-        self.add_queue(&file_path.unwrap(), true)
+    pub fn add_queue_yt(&mut self, file_path: &str) -> api::SongRequestRsp {
+        self.add_queue(file_path, true)
     }
 
     pub fn get_queue(&mut self) -> Vec<mp3::Mp3> {
