@@ -14,7 +14,7 @@ impl Config {
         Config {
             min_volume: 0,
             max_volume: 150,
-            music_path: "/".to_string(),
+            music_path: "./music".to_string(),
             votes_to_skip: 1,
         }
     }
@@ -22,16 +22,25 @@ impl Config {
     pub fn new_from_file(config_file: &str) -> Config {
         let _file = match File::open(&config_file) {
             Ok(file) => file,
-            Err(_err) => return Config::new(),
+            Err(_err) => {
+                println!("{} does not exist, using default config", config_file);
+                return Config::new();
+            },
         };
 
         let config_str: String = match std::fs::read_to_string(&config_file) {
-            Err(_) => return Config::new(),
+            Err(_) => {
+                println!("Could not read {}, using default config", config_file);
+                return Config::new();
+            },
             Ok(res_str) => res_str,
         };
 
         let mut res: Config = match toml::from_str(&config_str) {
-            Err(_) => return Config::new(),
+            Err(_) => {
+                println!("Could not parse {}, using default config", config_file);
+                return Config::new();
+            },
             Ok(res_conf) => res_conf,
         };
 
@@ -61,5 +70,23 @@ impl Config {
 
     pub fn nb_skip_get(&self) -> u32 {
         self.votes_to_skip
+    }
+
+    pub fn to_string(&self) -> String {
+        let mut res: String = String::new();
+
+        res.push_str("Music Path: ");
+        res.push_str(&self.music_path);
+
+        res.push_str("\nNumber of votes to skip: ");
+        res.push_str(&self.votes_to_skip.to_string());
+
+        res.push_str("\nMaximum Volume: ");
+        res.push_str(&self.max_volume.to_string());
+
+        res.push_str("\nMinimum Volume: ");
+        res.push_str(&self.min_volume.to_string());
+
+        return res;
     }
 }
