@@ -14,7 +14,7 @@ impl Config {
         Config {
             min_volume: 0,
             max_volume: 150,
-            music_path: "./music".to_string(),
+            music_path: "./music/".to_string(),
             votes_to_skip: 1,
         }
     }

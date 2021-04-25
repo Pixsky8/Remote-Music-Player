@@ -30,6 +30,7 @@ pub fn start_api(player: Mutex<Music>) -> rocket::Rocket {
             post::add_queue_file,
             post::add_queue_yt,
             volume::change_volume,
+            get::get_volume_info,
             post::skip_vote,
             get::bruh_moment,
         ],

@@ -13,6 +13,7 @@ use crate::api;
 pub struct Music {
     sink: rodio::Sink,
     path_queue: Vec<mp3::Mp3>,
+    volume: i32,
     pub config: config::Config,
 
     #[allow(dead_code)]
@@ -31,6 +32,7 @@ impl Music {
             stream: stream,
             sink: rodio::Sink::try_new(&stream_handle).unwrap(),
             path_queue: Vec::new(),
+            volume: 100,
             config: config::Config::new(),
         }
     }
@@ -43,6 +45,7 @@ impl Music {
             stream: stream_,
             sink: rodio::Sink::try_new(&stream_handle_).unwrap(),
             path_queue: Vec::new(),
+            volume: 100,
             config: config::Config::new_from_file(config_file),
         }
     }
@@ -54,11 +57,16 @@ impl Music {
             v => v,
         };
 
+        self.volume = volume;
         let real_value: f32 = (volume as f32) / 100.0;
 
         self.sink.set_volume(real_value);
 
         return volume;
+    }
+
+    pub fn volume_get(&self) -> i32 {
+        self.volume
     }
 
     fn replace_sink(&mut self) {

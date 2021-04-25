@@ -7,11 +7,18 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# mp3 tags
 id3 = "0.6.2"
+
 lazy_static = "1.4.0"
+
+# alsa interface
 rodio = "0.13.0"
+
+# http
 rocket = "0.4.7"
 rocket_contrib = "0.4.7"
+
 serde = "1.0"
 serde_json = "1.0.59"
 toml = "0.5.8"
