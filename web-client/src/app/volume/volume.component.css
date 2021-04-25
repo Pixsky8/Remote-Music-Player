@@ -1,0 +1,16 @@
+th {
+    width: 50%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+table {
+    border-collapse: collapse;
+    height: auto;
+}
+
+th.title {
+    text-align: right;
+}
+
+tr:nth-child(odd) {background-color: #f2f2f2;}

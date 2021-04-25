@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { Volume } from './volume';
+import { VolumeRequest, VolumeResponse } from './volume';
 
 @Injectable()
 export class VolumeService {
@@ -16,15 +16,23 @@ export class VolumeService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    requestVolume(vol: Volume): Observable<Volume> {
+    getVolumeInfo(): Observable<VolumeResponse> {
+        return this.http.get<VolumeResponse>(this.volumeRequestUrl,
+            this.httpOptions
+        ).pipe(
+            catchError(this.handleError<VolumeResponse>('VolumeInfo'))
+        );
+    }
+
+    requestVolume(vol: VolumeRequest): Observable<VolumeResponse> {
         const volJson = JSON.stringify(vol);
-        return this.http.put<Volume>(this.volumeRequestUrl,
+        return this.http.put<VolumeResponse>(this.volumeRequestUrl,
             volJson,
             this.httpOptions
         ).pipe(
-            tap((result: Volume) =>
-                console.log('new volume: ' + result.new_volume)),
-            catchError(this.handleError<Volume>('VolumeRequest'))
+            tap((result: VolumeResponse) =>
+                console.log(result)),
+            catchError(this.handleError<VolumeResponse>('VolumeRequest'))
         );
     }
 

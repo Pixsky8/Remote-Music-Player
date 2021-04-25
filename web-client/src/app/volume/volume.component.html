@@ -3,11 +3,47 @@
 </div>
 
 <div class="volumechange">
-    <input
-        class="string"
-        #localVol (keyup.enter)="requestVolume(localVol.value)"
-        placeholder="100"
-    >
+    <div class="center">
+        <table
+            width="300px"
+        >
+            <tr>
+                <th class="title">
+                    Current Volume:
+                </th>
+                <th class="volume">
+                    {{ curr_volume }}
+                </th>
+            </tr>
+            <tr>
+                <th class="title">
+                    Minimum Volume:
+                </th>
+                <th class="volume">
+                    {{ min_volume }}
+                </th>
+            </tr>
+            <tr>
+                <th class="title">
+                    Maximum Volume:
+                </th>
+                <th class="volume">
+                    {{ max_volume }}
+                </th>
+            </tr>
+        </table>
+    </div>
+    <h3></h3>
+    <div class="center">
+        <div class="container">
+            <input
+                class="string"
+                #localVol (keyup.enter)="requestVolume(localVol.value)"
+                placeholder="100"
+            >
+        </div>
+    </div>
+    <h3></h3>
     <div class="center">
         <button (click)="requestVolume(localVol.value)">Change</button>
     </div>

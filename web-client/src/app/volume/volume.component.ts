@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Volume } from '../interfaces/volume/volume';
+import { VolumeRequest, VolumeResponse } from '../interfaces/volume/volume';
 import { VolumeService } from '../interfaces/volume/volume.service'
 
 @Component({
@@ -11,10 +11,25 @@ import { VolumeService } from '../interfaces/volume/volume.service'
     styleUrls: ['./volume.component.css']
 })
 export class VolumeComponent implements OnInit {
+    min_volume: number = 0;
+    max_volume: number = 0;
+    curr_volume: number = 0;
+
     constructor(private volumeService: VolumeService,
                 private snackBar: MatSnackBar) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.getVolumeInfo();
+    }
+
+    getVolumeInfo(): void {
+        this.volumeService.getVolumeInfo()
+            .subscribe(rsp => {
+                this.min_volume = rsp.min_volume;
+                this.max_volume = rsp.max_volume;
+                this.curr_volume = rsp.current_volume;
+            });
+    }
 
     isValidNumber(num: string): boolean {
         var len = num.length;
@@ -35,17 +50,20 @@ export class VolumeComponent implements OnInit {
             return;
         }
 
-        var volumeRqst: Volume = {
+        var volumeRqst: VolumeRequest = {
             new_volume: Number(vol),
         };
 
         this.postRequestVolume(volumeRqst);
     }
 
-    postRequestVolume(put: Volume): void {
+    postRequestVolume(put: VolumeRequest): void {
         this.volumeService.requestVolume(put)
             .subscribe(putRsp => {
-                this.snackBar.open("New Volume set: " + putRsp.new_volume, "", {
+                this.min_volume = putRsp.min_volume;
+                this.max_volume = putRsp.max_volume;
+                this.curr_volume = putRsp.current_volume;
+                this.snackBar.open("New Volume set: " + putRsp.current_volume, "", {
                     duration: 5000,
                 });
             });
