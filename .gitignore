@@ -3,4 +3,6 @@
 *~
 *.swp
 
+web-client/.log
+
 server/music

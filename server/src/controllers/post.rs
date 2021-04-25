@@ -1,4 +1,4 @@
-use log::{info, warn};
+use log::info;
 use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
@@ -27,7 +27,6 @@ pub fn add_queue_yt(
 
     let file_path_opt: Option<String> = yt::yt_dl(&song.path);
     if file_path_opt == None {
-        warn!("youtube-dl error");
         return SongRequestRsp::Error(Status::NotFound);
     }
 
