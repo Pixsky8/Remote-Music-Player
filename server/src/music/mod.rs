@@ -1,3 +1,4 @@
+use log::{info, warn};
 use rocket::http::Status;
 use rocket_contrib::json::Json;
 use std::fs::File;
@@ -8,7 +9,7 @@ mod file;
 pub mod mp3;
 pub mod yt;
 
-use crate::api;
+use crate::responses;
 
 pub struct Music {
     sink: rodio::Sink,
@@ -77,10 +78,18 @@ impl Music {
         self.sink = rodio::Sink::try_new(&stream_handle).unwrap();
     }
 
-    fn add_to_sink(&mut self, music_path: &str) -> Option<api::SongRequestRsp> {
+    fn add_to_sink(
+        &mut self,
+        music_path: &str,
+    ) -> Option<responses::song::SongRequestRsp> {
         let file = match File::open(&music_path) {
             Ok(file) => file,
-            Err(_err) => return Some(api::SongRequestRsp::Error(Status::NotFound)),
+            Err(_err) => {
+                warn!("Could not open file {}", music_path);
+                return Some(responses::song::SongRequestRsp::Error(
+                    Status::NotFound,
+                ));
+            }
         };
 
         let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
@@ -94,7 +103,7 @@ impl Music {
         &mut self,
         music_path: &str,
         delete_afterward: bool,
-    ) -> api::SongRequestRsp {
+    ) -> responses::song::SongRequestRsp {
         self.update_queue();
 
         let sink_rsp = self.add_to_sink(music_path);
@@ -113,12 +122,15 @@ impl Music {
             new_mp3.cover_get(),
         );
 
-        return api::SongRequestRsp::Body(Json(returned_mp3));
+        return responses::song::SongRequestRsp::Body(Json(returned_mp3));
     }
 
-    pub fn add_queue_file(&mut self, music_path: &str) -> api::SongRequestRsp {
+    pub fn add_queue_file(
+        &mut self,
+        music_path: &str,
+    ) -> responses::song::SongRequestRsp {
         if !file::allow_access(&music_path) {
-            return api::SongRequestRsp::Error(Status::Forbidden);
+            return responses::song::SongRequestRsp::Error(Status::Forbidden);
         }
 
         let music_path: String =
@@ -127,7 +139,10 @@ impl Music {
         self.add_queue(&music_path, false)
     }
 
-    pub fn add_queue_yt(&mut self, file_path: &str) -> api::SongRequestRsp {
+    pub fn add_queue_yt(
+        &mut self,
+        file_path: &str,
+    ) -> responses::song::SongRequestRsp {
         self.add_queue(file_path, true)
     }
 
@@ -172,10 +187,10 @@ impl Music {
         let last_value_index = self.path_queue.len() - 1;
         let nb_votes = self.path_queue[last_value_index].increment_skip();
 
-        println!("Votes: {}", nb_votes);
+        info!("Votes: {}", nb_votes);
 
         if nb_votes >= self.config.nb_skip_get() {
-            println!("Skipping");
+            info!("Skipping!");
             self.sink.stop();
             self.replace_sink();
             self.path_queue.pop();

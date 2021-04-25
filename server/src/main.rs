@@ -2,10 +2,15 @@
 #[macro_use]
 extern crate rocket;
 
+use log;
+use log::error;
 use std::sync::Mutex;
+use termion::color;
 
-mod api;
+mod controllers;
 mod music;
+mod requests;
+mod responses;
 
 fn main() {
     let config_path: Option<String> = std::env::args().nth(1);
@@ -15,8 +20,12 @@ fn main() {
         Some(v) => Mutex::new(music::Music::new_from_file(&v)),
     };
 
-    println!("{}", player.lock().unwrap().config.to_string());
+    println!(
+        "{}{}",
+        color::Fg(color::Cyan),
+        player.lock().unwrap().config.to_string()
+    );
 
-    let web_server = api::start_api(player);
+    let web_server = controllers::start_api(player);
     web_server.launch();
 }

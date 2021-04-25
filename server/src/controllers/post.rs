@@ -1,24 +1,20 @@
+use log::{info, warn};
 use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
-use serde::Serialize;
 use std::sync::Mutex;
 
-use crate::api::SongRequest;
-use crate::api::SongRequestRsp;
-use crate::music::Music;
 use crate::music::yt;
-
-#[derive(Serialize)]
-pub struct SkipVotes {
-    votes: u32,
-}
+use crate::music::Music;
+use crate::requests::song::SongRequest;
+use crate::responses::{song::SongRequestRsp, vote::SkipVotes};
 
 #[post("/play", data = "<song>")]
 pub fn add_queue_file(
     music_player: State<Mutex<Music>>,
     song: Json<SongRequest>,
 ) -> SongRequestRsp {
+    info!("New Song Request: {}", &song.path);
     music_player.lock().unwrap().add_queue_file(&song.path)
 }
 
@@ -27,13 +23,18 @@ pub fn add_queue_yt(
     music_player: State<Mutex<Music>>,
     song: Json<SongRequest>,
 ) -> SongRequestRsp {
-    let file_path: Option<String> = yt::yt_dl(&song.path);
-    if file_path == None {
-        println!("file_path is None.");
+    info!("Fetching from youtube: {}", &song.path);
+
+    let file_path_opt: Option<String> = yt::yt_dl(&song.path);
+    if file_path_opt == None {
+        warn!("youtube-dl error");
         return SongRequestRsp::Error(Status::NotFound);
     }
 
-    music_player.lock().unwrap().add_queue_yt(&file_path.unwrap())
+    let file_path: String = file_path_opt.unwrap();
+    info!("Enqueued (youtube): {}", file_path);
+
+    music_player.lock().unwrap().add_queue_yt(&file_path)
 }
 
 #[post("/skip")]
