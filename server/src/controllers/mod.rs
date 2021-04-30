@@ -2,8 +2,8 @@ use std::sync::Mutex;
 
 use crate::music::Music;
 
-mod get;
-mod post;
+mod misc;
+mod queue;
 mod volume;
 
 pub fn start_api(player: Mutex<Music>) -> rocket::Rocket {
@@ -11,16 +11,15 @@ pub fn start_api(player: Mutex<Music>) -> rocket::Rocket {
         "/",
         routes![
             // Queue
-            get::get_queue,
-            post::add_queue_file,
-            post::add_queue_yt,
+            queue::get_queue,
+            queue::add_queue_file,
+            gueue::add_queue_yt,
+            queue::skip_vote,
             // Volume
             volume::get_volume_info,
             volume::change_volume,
-            // Skip
-            post::skip_vote,
             // Misc
-            get::bruh_moment,
+            misc::bruh_moment,
         ],
     )
 }

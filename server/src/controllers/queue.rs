@@ -4,10 +4,16 @@ use rocket::State;
 use rocket_contrib::json::Json;
 use std::sync::Mutex;
 
-use crate::music::yt;
+use crate::music::mp3::Mp3;
 use crate::music::Music;
+use crate::music::yt;
 use crate::requests::song::SongRequest;
 use crate::responses::{song::SongRequestRsp, vote::SkipVotes};
+
+#[get("/queue")]
+pub fn get_queue(music_player: State<Mutex<Music>>) -> Json<Vec<Mp3>> {
+    Json(music_player.lock().unwrap().get_queue())
+}
 
 #[post("/play", data = "<song>")]
 pub fn add_queue_file(
